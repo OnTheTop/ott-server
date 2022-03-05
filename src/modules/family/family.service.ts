@@ -18,10 +18,16 @@ export class FamilyService {
   async signUp(createFamilyDto: CreateFamilyDto) {
     try {
       const family = await this.saveFamily(createFamilyDto.familyNickname);
-      await this.saveMember(createFamilyDto.memberNickname, family.id);
+      const member = await this.saveMember(
+        createFamilyDto.memberNickname,
+        family.id,
+      );
       return {
         familyId: family.id,
         familyCode: family.familyCode,
+        memberId: member.id,
+        memberNickname: member.memberNickname,
+        isLeader: member.isLeader,
       };
     } catch (error) {
       throw new InternalServerErrorException(error.message, error);
@@ -68,7 +74,14 @@ export class FamilyService {
   async addMember(memberNickname: string, familyCode: string) {
     try {
       const familyId = await this.findFamilyIdByCode(familyCode);
-      return await this.saveMember(memberNickname, familyId);
+      const member = await this.saveMember(memberNickname, familyId);
+      return {
+        familyId: familyId,
+        familyCode: familyCode,
+        memberId: member.id,
+        memberNickname: member.memberNickname,
+        isLeader: member.isLeader,
+      };
     } catch (error) {
       throw new InternalServerErrorException(error.message, error);
     }
