@@ -10,14 +10,14 @@ export class Family {
   familyNickname: string;
 
   @IsNumber()
-  @Column({ name: 'gauge' })
+  @Column({ name: 'gauge', default: 0 })
   gauge: number;
 
   @IsString()
   @Column({ name: 'family-code', unique: true })
-  familyCode: number;
+  familyCode: string;
 
   @IsNumber()
-  @Column({ name: 'member-cnt' })
+  @Column({ name: 'member-cnt', default: 0 })
   memberCount: number;
 }
