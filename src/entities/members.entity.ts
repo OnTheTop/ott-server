@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import {
   Column,
   Entity,
@@ -15,20 +15,11 @@ export class Member {
 
   @IsString()
   @IsNotEmpty()
-  @Column({ name: 'nick-name' })
-  nickName: string;
+  @Column({ name: 'member-nickname' })
+  memberNickname: string;
 
-  @IsNumber()
-  @Column({ name: 'gauge' })
-  gauge: number;
-
-  @IsString()
-  @Column({ name: 'family-code', unique: true })
-  familiyCode: number;
-
-  @IsNumber()
-  @Column({ name: 'member-cnt' })
-  memberCount: number;
+  @Column({ name: 'leader' })
+  isLeader: boolean;
 
   @ManyToOne(() => Family)
   familiy: Family;

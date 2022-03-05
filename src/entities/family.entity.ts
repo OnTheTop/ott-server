@@ -1,3 +1,4 @@
+import { IsNumber, IsString } from 'class-validator';
 import { Column, Entity, Long, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'family' })
@@ -5,9 +6,18 @@ export class Family {
   @PrimaryGeneratedColumn()
   id: Long;
 
-  @Column({ name: 'nickname' })
-  nickName: string;
+  @Column({ name: 'family-nickname' })
+  familyNickname: string;
 
-  @Column({ name: 'leader' })
-  isLeader: boolean;
+  @IsNumber()
+  @Column({ name: 'gauge' })
+  gauge: number;
+
+  @IsString()
+  @Column({ name: 'family-code', unique: true })
+  familyCode: number;
+
+  @IsNumber()
+  @Column({ name: 'member-cnt' })
+  memberCount: number;
 }
