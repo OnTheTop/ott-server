@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  Long,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Member } from './members.entity';
+import { Column, Entity, Long, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'familiy' })
 export class Familiy {
@@ -17,7 +10,4 @@ export class Familiy {
 
   @Column({ name: 'leader' })
   isLeader: boolean;
-
-  @OneToMany(() => Member, (member) => member.familiy)
-  members: Member[];
 }
