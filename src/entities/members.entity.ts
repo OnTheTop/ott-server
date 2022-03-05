@@ -22,5 +22,5 @@ export class Member {
   isLeader: boolean;
 
   @ManyToOne(() => Family)
-  familiy: Family;
+  family: Family;
 }
