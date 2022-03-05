@@ -6,7 +6,10 @@ import { Mission } from 'src/entities/missions.entity';
 import { Picture } from 'src/entities/pictures.entity';
 import { Question } from 'src/entities/questions.entity';
 import {
+  IAnswerInfo,
   IGetMissionOfFamily,
+  IGetPictureMissionOfFamily,
+  IGetQuestionMissionOfFamily,
   IMissionInfo,
 } from 'src/interfaces/missions.interface';
 import { getConnection, Repository } from 'typeorm';
@@ -127,17 +130,12 @@ export class MissionsService {
       where: { id: questionMissionId },
     });
 
-    const month = mission.date.getMonth() + 1;
-    const date = mission.date.getDate();
-    const rMonth = month > 9 ? String(month) : '0' + String(month);
-    const rDate = date > 9 ? String(date) : '0' + String(date);
-
     return {
       missionId: questionMissionId,
       missionCategory: '질문',
       completedMemberCount: completedCount,
       memberCount: memberCount,
-      date: rMonth + '.' + rDate,
+      date: this._formattingDate(mission),
     };
   }
 
@@ -159,17 +157,108 @@ export class MissionsService {
       where: { id: pictureMissionId },
     });
 
-    const month = mission.date.getMonth() + 1;
-    const date = mission.date.getDate();
-    const rMonth = month > 9 ? String(month) : '0' + String(month);
-    const rDate = date > 9 ? String(date) : '0' + String(date);
-
     return {
       missionId: pictureMissionId,
       missionCategory: '사진',
       completedMemberCount: completedCount,
       memberCount: 1,
-      date: rMonth + '.' + rDate,
+      date: this._formattingDate(mission),
+    };
+  }
+
+  _formattingDate(mission: Mission): string {
+    const month = mission.date.getMonth() + 1;
+    const date = mission.date.getDate();
+    const rMonth = month > 9 ? String(month) : '0' + String(month);
+    const rDate = date > 9 ? String(date) : '0' + String(date);
+
+    return rMonth + '.' + rDate;
+  }
+
+  async getQuestionMissionOfFamily(
+    missionId: number,
+    familyId: number,
+  ): Promise<IGetQuestionMissionOfFamily> {
+    const mission: Mission = await this.missionRepository.findOne({
+      where: { id: missionId },
+    });
+
+    const questions: Question[] = await getConnection()
+      .createQueryBuilder()
+      .select()
+      .from(Question, 'question')
+      .leftJoinAndSelect('question.member', '')
+      .where(
+        'question.missionId = :missionId and question.familyId = :familyId',
+        {
+          missionId: missionId,
+          familyId: familyId,
+        },
+      )
+      .execute();
+
+    const answerInfos: IAnswerInfo[] = this._formattionAnswerInfo(questions);
+
+    return {
+      content: mission.content,
+      date: this._formattingDate(mission),
+      isTotalAnswerCompleted: this.isEveryoneAnswered(answerInfos),
+      answerInfo: answerInfos,
+    };
+  }
+
+  _formattionAnswerInfo(questions: Question[]): IAnswerInfo[] {
+    const answerInfos = [];
+
+    answerInfos.push(
+      ...questions.map((question) => {
+        const isAnswered: boolean = question.answer ? true : false;
+        return {
+          nickName: question['member-nickname'],
+          answer: question.answer,
+          isAnswered: isAnswered,
+        };
+      }),
+    );
+
+    return answerInfos;
+  }
+
+  isEveryoneAnswered(answerInfos: IAnswerInfo[]): boolean {
+    const noAnswerList: IAnswerInfo[] = answerInfos.filter((answerInfos) => {
+      return !answerInfos.isAnswered;
+    });
+
+    return noAnswerList.length > 0 ? false : true;
+  }
+
+  async getPictureMissionOfFamily(
+    missionId: number,
+    familyId: number,
+  ): Promise<IGetPictureMissionOfFamily> {
+    const mission: Mission = await this.missionRepository.findOne({
+      where: { id: missionId },
+    });
+
+    const picture: Picture = await getConnection()
+      .createQueryBuilder()
+      .select()
+      .from(Picture, 'picture')
+      .where(
+        'picture.missionId = :missionId and picture.familyId = :familyId',
+        {
+          missionId: missionId,
+          familyId: familyId,
+        },
+      )
+      .execute();
+
+    return {
+      content: mission.content,
+      date: this._formattingDate(mission),
+      pictureDescription: picture[0].comment,
+      pastPhoto: picture[0].pastPhoto,
+      recentPhoto: picture[0].recentPhoto,
     };
   }
 }
