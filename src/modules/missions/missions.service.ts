@@ -97,7 +97,7 @@ export class MissionsService {
     });
 
     const members: Member[] = await this.memberRepository.find({
-      where: { familiy: familyId },
+      where: { family: familyId },
     });
 
     const questionMissionIds: number[] = [];
@@ -325,14 +325,14 @@ export class MissionsService {
     const mission: Mission = await this.missionRepository.findOne({
       where: { id: missionId },
     });
-    const familiy: Family = await this.familyRepository.findOne({
+    const family: Family = await this.familyRepository.findOne({
       where: { id: familyId },
     });
 
     const question: Question = this.questionRepository.create({
       answer: answer,
       mission: mission,
-      family: familiy,
+      family: family,
       member: member,
     });
 
