@@ -23,7 +23,7 @@ export class Picture {
   @IsString()
   @IsNotEmpty()
   @Column()
-  recentPhote: string;
+  recentPhoto: string;
 
   @IsString()
   @IsNotEmpty()
