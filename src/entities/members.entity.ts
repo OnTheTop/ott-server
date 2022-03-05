@@ -18,7 +18,7 @@ export class Member {
   @Column({ name: 'member-nickname' })
   memberNickname: string;
 
-  @Column({ name: 'leader' })
+  @Column({ name: 'leader', default: false })
   isLeader: boolean;
 
   @ManyToOne(() => Family)
