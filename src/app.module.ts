@@ -6,7 +6,7 @@ import { AppService } from './app.service';
 import { MembersModule } from './modules/members/members.module';
 import * as ormconfig from '../ormconfig';
 import { MissionsModule } from './modules/missions/missions.module';
-import { FamiliyModule } from './modules/family/family.module';
+import { FamilyModule } from './modules/family/family.module';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { FamiliyModule } from './modules/family/family.module';
     TypeOrmModule.forRoot(ormconfig),
     MissionsModule,
     MembersModule,
-    FamiliyModule,
+    FamilyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
