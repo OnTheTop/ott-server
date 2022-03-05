@@ -31,6 +31,10 @@ export class MissionsService {
   ) {}
 
   async getMission(missionId: number): Promise<Mission> {
+    await this.missionRepository.update(
+      { id: missionId },
+      { date: new Date() },
+    );
     return await this.missionRepository.findOne({ where: { id: missionId } });
   }
 
