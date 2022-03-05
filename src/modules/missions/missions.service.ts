@@ -59,7 +59,7 @@ export class MissionsService {
 
     if (mission.category == '질문') {
       const members: Member[] = await this.memberRepository.find({
-        where: { familiy: familyId },
+        where: { family: familyId },
       });
 
       members.map(async (member) => {
@@ -76,8 +76,8 @@ export class MissionsService {
         .createQueryBuilder()
         .select()
         .from(Member, 'member')
-        .where('member.familiyId = :familiyId and leader = 1', {
-          familiyId: familyId,
+        .where('member.familyId = :familyId and leader = 1', {
+          familyId: familyId,
         })
         .execute();
 
