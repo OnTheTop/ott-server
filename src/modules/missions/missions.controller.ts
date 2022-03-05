@@ -14,4 +14,15 @@ export class MissionsController {
   async getMissionsOfFamily(@Param('familyId') familyId: number) {
     return await this.missionService.getMissionsOfFamily(familyId);
   }
+
+  @Get('/question/:missionId/family/:familyId')
+  async getQuestionMissionOfFamily(
+    @Param('missionId') missionId: number,
+    @Param('familyId') familyId: number,
+  ) {
+    return await this.missionService.getQuestionMissionOfFamily(
+      missionId,
+      familyId,
+    );
+  }
 }
