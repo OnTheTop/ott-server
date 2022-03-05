@@ -51,7 +51,7 @@ export class FamilyService {
       await this.familyRepository.save(family);
 
       const member = new Member();
-      member.familiy = family;
+      member.family = family;
       member.memberNickname = memberNickname;
       if (family.memberCount == 0) {
         member.isLeader = true;
