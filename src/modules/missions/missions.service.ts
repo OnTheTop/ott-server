@@ -377,7 +377,7 @@ export class MissionsService {
       const year: number = mission.date.getFullYear();
       const month: number = mission.date.getMonth() + 1;
       const date: number = mission.date.getDate();
-      console.log(year);
+
       if (new Date(year, month, 0).getDate() == date && date == 28) {
         await this.familyRepository.update(family, { gauge: family.gauge + 3 });
       } else if (new Date(year, month, 0).getDate() == date && date == 31) {
