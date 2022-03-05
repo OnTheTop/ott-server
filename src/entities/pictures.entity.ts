@@ -18,12 +18,12 @@ export class Picture {
   @IsString()
   @IsNotEmpty()
   @Column()
-  oldPictureUrl: string;
+  pastPhoto: string;
 
   @IsString()
   @IsNotEmpty()
   @Column()
-  currentPictureUrl: string;
+  recentPhoto: string;
 
   @IsString()
   @IsNotEmpty()

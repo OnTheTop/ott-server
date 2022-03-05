@@ -17,7 +17,7 @@ export class Question {
 
   @IsNumber()
   @IsOptional()
-  @Column()
+  @Column({ default: null })
   answer: string;
 
   @ManyToOne(() => Family)

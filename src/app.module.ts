@@ -5,12 +5,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MembersModule } from './modules/members/members.module';
 import * as ormconfig from '../ormconfig';
+import { MissionsModule } from './modules/missions/missions.module';
 import { FamiliyModule } from './modules/family/family.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot(ormconfig),
+    MissionsModule,
     MembersModule,
     FamiliyModule,
   ],

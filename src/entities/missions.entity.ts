@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Column, Entity, Long, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'missions' })
@@ -17,7 +17,7 @@ export class Mission {
   content: string;
 
   @IsDate()
-  @IsNotEmpty()
-  @Column()
+  @IsOptional()
+  @Column({ default: null })
   date: Date;
 }
