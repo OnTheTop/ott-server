@@ -319,23 +319,71 @@ export class MissionsService {
   ) {
     const { memberId, answer } = carryOutQuestionMissionDto;
 
-    const member: Member = await this.memberRepository.findOne({
-      where: { id: memberId },
-    });
     const mission: Mission = await this.missionRepository.findOne({
       where: { id: missionId },
     });
-    const family: Family = await this.familyRepository.findOne({
-      where: { id: familyId },
-    });
 
-    const question: Question = this.questionRepository.create({
-      answer: answer,
-      mission: mission,
-      family: family,
-      member: member,
-    });
+    const question: Question = await getConnection()
+      .createQueryBuilder()
+      .select()
+      .from(Question, 'question')
+      .where(
+        'question.missionId = :missionId and question.familyId = :familyId and question.memberId = :memberId',
+        {
+          missionId: missionId,
+          familyId: familyId,
+          memberId: memberId,
+        },
+      )
+      .execute();
 
-    await this.questionRepository.save(question);
+    await this.questionRepository.update(question, { answer: answer });
+
+    const questions: Question[] = await this.getQuestionsOfFamily(
+      missionId,
+      familyId,
+    );
+    await this.increaseGause(familyId, mission, questions);
+  }
+
+  async getQuestionsOfFamily(
+    missionId: number,
+    familyId: number,
+  ): Promise<Question[]> {
+    return await getConnection()
+      .createQueryBuilder()
+      .select()
+      .from(Question, 'question')
+      .where(
+        'question.missionId = :missionId and question.familyId = :familyId',
+        {
+          missionId: missionId,
+          familyId: familyId,
+        },
+      )
+      .execute();
+  }
+
+  async increaseGause(
+    familyId: number,
+    mission: Mission,
+    questions: Question[],
+  ) {
+    const answerInfos: IAnswerInfo[] = this._formattionAnswerInfo(questions);
+    if (this.isEveryoneAnswered(answerInfos)) {
+      const family: Family = await this.familyRepository.findOne({
+        where: { id: familyId },
+      });
+      const year: number = mission.date.getFullYear();
+      const month: number = mission.date.getMonth() + 1;
+      const date: number = mission.date.getDate();
+      console.log(year);
+      if (new Date(year, month, 0).getDate() == date && date == 28) {
+        await this.familyRepository.update(family, { gauge: family.gauge + 3 });
+      } else if (new Date(year, month, 0).getDate() == date && date == 31) {
+      } else {
+        await this.familyRepository.update(family, { gauge: family.gauge + 1 });
+      }
+    }
   }
 }
