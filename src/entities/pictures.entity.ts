@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Familiy } from './familiy.entity';
 import { Member } from './members.entity';
-import { Mission } from './missions.entities';
+import { Mission } from './missions.entity';
 
 @Entity({ name: 'pictures' })
 export class Picture {
