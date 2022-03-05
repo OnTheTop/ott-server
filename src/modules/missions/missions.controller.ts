@@ -1,13 +1,17 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { CarryOutQuestionMissionDto } from './dto/carry-out-question-mission.dto';
 import { MissionsService } from './missions.service';
 
 @Controller('missions')
 export class MissionsController {
   constructor(private readonly missionService: MissionsService) {}
 
-  @Get('/:id')
-  async getMission(@Param('id') missionId: number) {
-    return await this.missionService.getMission(missionId);
+  @Get('/:missionId/family/:familyId')
+  async getMission(
+    @Param('missionId') missionId: number,
+    @Param('familyId') familyId: number,
+  ) {
+    return await this.missionService.getMission(missionId, familyId);
   }
 
   @Get('/family/:familyId')
@@ -34,6 +38,19 @@ export class MissionsController {
     return await this.missionService.getPictureMissionOfFamily(
       missionId,
       familyId,
+    );
+  }
+
+  @Post('/question/:missionId/family/:familyId')
+  async carryOutQuestionMission(
+    @Param('missionId') missionId: number,
+    @Param('familyId') familyId: number,
+    @Body() carryOutQuestionMissionDto: CarryOutQuestionMissionDto,
+  ) {
+    return await this.missionService.carryOutQuestionMission(
+      missionId,
+      familyId,
+      carryOutQuestionMissionDto,
     );
   }
 }

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import {
   Column,
   Entity,
@@ -16,18 +16,18 @@ export class Picture {
   id: Long;
 
   @IsString()
-  @IsNotEmpty()
-  @Column()
+  @IsOptional()
+  @Column({ default: null })
   pastPhoto: string;
 
   @IsString()
-  @IsNotEmpty()
-  @Column()
+  @IsOptional()
+  @Column({ default: null })
   recentPhoto: string;
 
   @IsString()
-  @IsNotEmpty()
-  @Column()
+  @IsOptional()
+  @Column({ default: null })
   comment: string;
 
   @ManyToOne(() => Family)

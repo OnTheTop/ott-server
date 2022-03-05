@@ -13,6 +13,7 @@ import {
   IMissionInfo,
 } from 'src/interfaces/missions.interface';
 import { getConnection, Repository } from 'typeorm';
+import { CarryOutQuestionMissionDto } from './dto/carry-out-question-mission.dto';
 
 @Injectable()
 export class MissionsService {
@@ -33,12 +34,55 @@ export class MissionsService {
     private readonly pictureRepository: Repository<Picture>,
   ) {}
 
-  async getMission(missionId: number): Promise<Mission> {
+  async getMission(missionId: number, familyId: number): Promise<Mission> {
+    await this.updateMissionDate(missionId);
+
+    await this.saveQuestion(familyId, missionId);
+
+    return await this.missionRepository.findOne({ where: { id: missionId } });
+  }
+
+  async updateMissionDate(missionId: number) {
     await this.missionRepository.update(
       { id: missionId },
       { date: new Date() },
     );
-    return await this.missionRepository.findOne({ where: { id: missionId } });
+  }
+
+  async saveQuestion(familyId: number, missionId: number) {
+    const family: Family = await this.familyRepository.findOne({
+      where: { id: familyId },
+    });
+    const mission: Mission = await this.missionRepository.findOne({
+      where: { id: missionId },
+    });
+
+    if (mission.category == '질문') {
+      const members: Member[] = await this.memberRepository.find({
+        where: { familiy: familyId },
+      });
+
+      members.map(async (member) => {
+        const question: Question = this.questionRepository.create({
+          family: family,
+          mission: mission,
+          member: member,
+        });
+
+        await this.questionRepository.save(question);
+      });
+    } else {
+      const member: Member = await getConnection()
+        .createQueryBuilder()
+        .select('missionId')
+        .from(Member, 'member')
+        .where('member.familyId = :familyId and leader = 1', {
+          familyId: familyId,
+        })
+        .execute();
+
+      console.log(member);
+    }
   }
 
   async getMissionsOfFamily(familyId: number): Promise<IGetMissionOfFamily> {
@@ -260,5 +304,32 @@ export class MissionsService {
       pastPhoto: picture[0].pastPhoto,
       recentPhoto: picture[0].recentPhoto,
     };
+  }
+
+  async carryOutQuestionMission(
+    missionId: number,
+    familyId: number,
+    carryOutQuestionMissionDto: CarryOutQuestionMissionDto,
+  ) {
+    const { memberId, answer } = carryOutQuestionMissionDto;
+
+    const member: Member = await this.memberRepository.findOne({
+      where: { id: memberId },
+    });
+    const mission: Mission = await this.missionRepository.findOne({
+      where: { id: missionId },
+    });
+    const familiy: Family = await this.familyRepository.findOne({
+      where: { id: familyId },
+    });
+
+    const question: Question = this.questionRepository.create({
+      answer: answer,
+      mission: mission,
+      family: familiy,
+      member: member,
+    });
+
+    await this.questionRepository.save(question);
   }
 }
