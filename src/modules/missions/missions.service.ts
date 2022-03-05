@@ -8,6 +8,7 @@ import { Question } from 'src/entities/questions.entity';
 import {
   IAnswerInfo,
   IGetMissionOfFamily,
+  IGetPictureMissionOfFamily,
   IGetQuestionMissionOfFamily,
   IMissionInfo,
 } from 'src/interfaces/missions.interface';
@@ -229,5 +230,35 @@ export class MissionsService {
     });
 
     return noAnswerList.length > 0 ? false : true;
+  }
+
+  async getPictureMissionOfFamily(
+    missionId: number,
+    familyId: number,
+  ): Promise<IGetPictureMissionOfFamily> {
+    const mission: Mission = await this.missionRepository.findOne({
+      where: { id: missionId },
+    });
+
+    const picture: Picture = await getConnection()
+      .createQueryBuilder()
+      .select()
+      .from(Picture, 'picture')
+      .where(
+        'picture.missionId = :missionId and picture.familyId = :familyId',
+        {
+          missionId: missionId,
+          familyId: familyId,
+        },
+      )
+      .execute();
+
+    return {
+      content: mission.content,
+      date: this._formattingDate(mission),
+      pictureDescription: picture[0].comment,
+      pastPhoto: picture[0].pastPhoto,
+      recentPhoto: picture[0].recentPhoto,
+    };
   }
 }

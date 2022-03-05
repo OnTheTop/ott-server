@@ -26,9 +26,18 @@ interface IAnswerInfo {
   isAnswered: boolean;
 }
 
+interface IGetPictureMissionOfFamily {
+  content: string;
+  date: string;
+  pictureDescription: string;
+  pastPhoto: string;
+  recentPhoto: string;
+}
+
 export {
   IGetMissionOfFamily,
   IMissionInfo,
   IGetQuestionMissionOfFamily,
   IAnswerInfo,
+  IGetPictureMissionOfFamily,
 };

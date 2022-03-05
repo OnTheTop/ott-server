@@ -25,4 +25,15 @@ export class MissionsController {
       familyId,
     );
   }
+
+  @Get('/picture/:missionId/family/:familyId')
+  async getPictureMissionOfFamily(
+    @Param('missionId') missionId: number,
+    @Param('familyId') familyId: number,
+  ) {
+    return await this.missionService.getPictureMissionOfFamily(
+      missionId,
+      familyId,
+    );
+  }
 }
