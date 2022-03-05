@@ -37,7 +37,7 @@ export class MissionsService {
   async getMission(missionId: number, familyId: number): Promise<Mission> {
     await this.updateMissionDate(missionId);
 
-    await this.saveQuestion(familyId, missionId);
+    await this.saveMission(familyId, missionId);
 
     return await this.missionRepository.findOne({ where: { id: missionId } });
   }
@@ -49,7 +49,7 @@ export class MissionsService {
     );
   }
 
-  async saveQuestion(familyId: number, missionId: number) {
+  async saveMission(familyId: number, missionId: number) {
     const family: Family = await this.familyRepository.findOne({
       where: { id: familyId },
     });
@@ -72,16 +72,22 @@ export class MissionsService {
         await this.questionRepository.save(question);
       });
     } else {
-      const member: Member = await getConnection()
+      const member: Member[] = await getConnection()
         .createQueryBuilder()
-        .select('missionId')
+        .select()
         .from(Member, 'member')
-        .where('member.familyId = :familyId and leader = 1', {
-          familyId: familyId,
+        .where('member.familiyId = :familiyId and leader = 1', {
+          familiyId: familyId,
         })
         .execute();
 
-      console.log(member);
+      const picture: Picture = this.pictureRepository.create({
+        family: family,
+        mission: mission,
+        member: member[0],
+      });
+
+      await this.pictureRepository.save(picture);
     }
   }
 
