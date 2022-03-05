@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Familiy } from './familiy.entity';
+import { Family } from './family.entity';
 
 @Entity({ name: 'member' })
 export class Member {
@@ -23,13 +23,13 @@ export class Member {
   gauge: number;
 
   @IsString()
-  @Column({ name: 'familiy-code', unique: true })
+  @Column({ name: 'family-code', unique: true })
   familiyCode: number;
 
   @IsNumber()
   @Column({ name: 'member-cnt' })
   memberCount: number;
 
-  @ManyToOne(() => Familiy)
-  familiy: Familiy;
+  @ManyToOne(() => Family)
+  familiy: Family;
 }

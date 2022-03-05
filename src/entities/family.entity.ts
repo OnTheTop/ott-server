@@ -1,7 +1,7 @@
 import { Column, Entity, Long, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'familiy' })
-export class Familiy {
+@Entity({ name: 'family' })
+export class Family {
   @PrimaryGeneratedColumn()
   id: Long;
 

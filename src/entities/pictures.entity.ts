@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Familiy } from './familiy.entity';
+import { Family } from './family.entity';
 import { Member } from './members.entity';
 import { Mission } from './missions.entity';
 
@@ -30,8 +30,8 @@ export class Picture {
   @Column()
   comment: string;
 
-  @ManyToOne(() => Familiy)
-  family: Familiy;
+  @ManyToOne(() => Family)
+  family: Family;
 
   @ManyToOne(() => Member)
   member: Member;
