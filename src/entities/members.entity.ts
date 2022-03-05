@@ -30,6 +30,6 @@ export class Member {
   @Column({ name: 'member-cnt' })
   memberCount: number;
 
-  @ManyToOne(() => Familiy, (familiy) => familiy.members)
+  @ManyToOne(() => Familiy)
   familiy: Familiy;
 }
