@@ -275,6 +275,10 @@ export class MissionsService {
   }
 
   isEveryoneAnswered(answerInfos: IAnswerInfo[]): boolean {
+    if (answerInfos.length == 0) {
+      return false;
+    }
+
     const noAnswerList: IAnswerInfo[] = answerInfos.filter((answerInfos) => {
       return !answerInfos.isAnswered;
     });
